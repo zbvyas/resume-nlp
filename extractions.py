@@ -3,6 +3,7 @@ This script extract key information from a resume using Apache Tika and NLTK
 """
 import re
 import argparse
+from pprint import pprint
 import nltk
 import tika
 from tika import parser
@@ -47,7 +48,7 @@ def extract_text_from_docx(docx_path):
 
 def extract_names(resume_text):
     """
-    Extract name entities from the resume
+    Extract names from the resume
     """
     person_names = []
 
@@ -63,7 +64,7 @@ def extract_names(resume_text):
 
 def extract_phone_number(resume_text):
     """
-    Extract name entities from the resume
+    Extract phone number from the resume
     """
     phone = re.findall(PHONE_REG, resume_text)
 
@@ -118,11 +119,22 @@ if __name__ == '__main__':
     resume_text = extract_text_from_docx(args.file)
 
     names = extract_names(resume_text)
-    phone_numbers = extract_phone_number(resume_text)
+    phone_number = extract_phone_number(resume_text)
     emails = extract_emails(resume_text)
     skills = extract_skills(resume_text)
 
-    print("NAMES EXTRACTED: ", names)
-    print("PHONE NUMBERS: ", phone_numbers)
-    print("EMAILS: ", emails)
-    print("SKILLS: ", skills)
+    print("*"*50)
+    print("NAME")
+    pprint(names)
+
+    print("*"*50)
+    print("PHONE NUMBER")
+    pprint(phone_number)
+
+    print("*"*50)
+    print("EMAILS")
+    pprint(emails)
+
+    print("*"*50)
+    print("SKILLS")
+    pprint(skills)
