@@ -1,7 +1,13 @@
+"""
+Main entry point for FastAPI
+"""
 from fastapi import FastAPI
 
 app = FastAPI()
 
 @app.get('/')
-def root():
+async def root():
+    """
+    root endpoint
+    """
     return "Welcome to Resume NLP!"

@@ -18,6 +18,6 @@ python extractions.py -f /path/to/resume
 ```bash
 fastapi dev main.py # fastapi dev will start with auto-reload enabled for local development
 
-# Serving at: http://127.0.0.1:8000                  
-# API docs: http://127.0.0.1:8000/docs     
+# Serving at: http://localhost:8000
+# API docs: http://localhost:8000/docs
 ```
