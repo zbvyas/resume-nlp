@@ -3,7 +3,6 @@ This script extract key information from a resume using Apache Tika and NLTK
 """
 import re
 import argparse
-from pprint import pprint
 import nltk
 import tika
 from tika import parser
@@ -17,6 +16,16 @@ nltk.download('averaged_perceptron_tagger')
 nltk.download('maxent_ne_chunker')
 nltk.download('words')
 nltk.download('stopwords')
+
+EDUCATION = [
+    'school',
+    'college',
+    'university',
+    'academy',
+    'faculty',
+    'institute',
+    'polytechnic',
+]
 
 tika.initVM()
 
@@ -114,6 +123,29 @@ def extract_skills(resume_text):
     return found_skills
 
 
+def extract_education(resume_text):
+    """
+    Extract education from the resume
+    """
+    organizations = []
+
+    # first get all the organization names using nltk
+    for sent in nltk.sent_tokenize(resume_text):
+        for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(sent))):
+            if hasattr(chunk, 'label') and chunk.label() == 'ORGANIZATION':
+                organizations.append(' '.join(c[0] for c in chunk.leaves()))
+
+    # we search for each bigram and trigram for reserved words
+    # (college, university etc...)
+    education = set()
+    for org in organizations:
+        for word in EDUCATION:
+            if org.lower().find(word) >= 0:
+                education.add(org)
+
+    return education
+
+
 if __name__ == '__main__':
     args = p.parse_args()
     resume_text = extract_text_from_docx(args.file)
@@ -122,19 +154,11 @@ if __name__ == '__main__':
     phone_number = extract_phone_number(resume_text)
     emails = extract_emails(resume_text)
     skills = extract_skills(resume_text)
+    education = extract_education(resume_text)
 
-    print("*"*50)
-    print("NAME")
-    pprint(names)
+    print("NAME: ", names)
+    print("PHONE NUMBER: ", phone_number)
+    print("EMAILS: ", emails)
+    print("SKILLS: ", skills)
+    print("EDUCATION: ", education)
 
-    print("*"*50)
-    print("PHONE NUMBER")
-    pprint(phone_number)
-
-    print("*"*50)
-    print("EMAILS")
-    pprint(emails)
-
-    print("*"*50)
-    print("SKILLS")
-    pprint(skills)
